@@ -1,0 +1,15 @@
+<!doctype HTML>
+<html>
+<script src="js/aframe.min.js"></script>
+<script src="js/aframe-extras.loaders.min.js"></script>
+<script src="js/aframe-ar.js"> </script>
+  <body style='margin : 0px; overflow: hidden;'>
+    <a-scene stats embedded arjs='trackingMethod: best;'>
+      <a-marker preset="hiro">
+      <a-box position='0 1 0' material='color: blue;'>
+      </a-box>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+  </body>
+</html>
