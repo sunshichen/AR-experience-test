@@ -15,9 +15,12 @@
 
                 marker.addEventListener('markerFound', function () {
                     this.vid.play();
+                    console.log("video played")
+                    console.log(this.vid)
                 }.bind(this));
     
 		marker.addEventListener('markerLost', function() {
+			console.log("video stopped")
 			this.vid.pause();
 			this.vid.currentTime = 0;
 		}.bind(this));
