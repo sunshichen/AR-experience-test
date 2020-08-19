@@ -11,7 +11,7 @@
             init: function () {
             	console.log("============")
                 var marker = this.el;
-
+                console.log(marker)
                 this.vid = document.querySelector("#vid");
                 console.log(this.vid)
 
@@ -19,6 +19,7 @@
                     this.vid.play();
                     console.log("video played")
                     console.log(this.vid)
+                    console.log(this.el)
                 }.bind(this));
     
 		marker.addEventListener('markerLost', function() {
@@ -69,7 +70,7 @@
 		>
 
 		<a-assets>
-            <video src="video/landscape.m4v"
+            <video src="video/landscape_cropped.m4v"
                 preload="auto" id="vid" response-type="arraybuffer" loop="true"
                 crossorigin webkit-playsinline autoplay muted playsinline>
             </video>
@@ -87,10 +88,10 @@
 
 			<a-video
                 src="#vid"
-                position='0 0 -100'
+                position='60 -270 -150'
                 rotation="-90 0 0"
-                width='300'
-                height='175'
+                width='270'
+                height='270'
                 >
             </a-video>
 
