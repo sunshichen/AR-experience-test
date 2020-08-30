@@ -1,104 +1,36 @@
 <!doctype HTML>
 <html>
-<script src="js/aframe.min.js"></script>
-<script src="js/aframe-extras.loaders.min.js"></script>
+  <body style='margin : 50px; overflow: hidden;'>
+    <h2>AR experience test</h3>
 
-<script src="js/aframe-ar-nft.js"></script>
+    <h3>Image and Marker Traking</h3>
 
-<script>
-    window.onload = function() {
-        AFRAME.registerComponent('videohandler', {
-            init: function () {
-            	console.log("============")
-                var marker = this.el;
-                console.log(marker)
-                this.vid = document.querySelector("#vid");
-                console.log(this.vid)
-
-                marker.addEventListener('markerFound', function () {
-                    this.vid.play();
-                    console.log("video played")
-                    console.log(this.vid)
-                    console.log(this.el)
-                }.bind(this));
+    <dl>
+      <dt><a href="./aframe-nft.html"> AFrame NFT Test </a></dt>
+      <dd>- Using A frame with ARjs. Tracking a image NFT marker.</dd>
+      <br/>
+      <dt><a href="./aframe-marker.html"> AFrame Hiro Marker Test</a></dt>
+      <dd>- Using Aframe with ARjs. Tracking a Hiro marker.</dd>
+      <br/>
+      <dt><a href="./three-marker-v1.html"> Threejs Hiro Marker Test</a></dt>
+      <dd>- Using Threejs with ARjs. Tracking a Hiro marker.</dd>
+      <br>
+      <dt><a href="./three-image-marker.html"> Threejs image marker tracking Test</a></dt>
+      <dd>- Using Threejs with ARjs. Tracking a custom marker with image.</dd>
+      <br/>
+      <dt><a href="./three-nft.html"> Threejs NFT image tracking Test</a></dt>
+      <dd>- Using Threejs with ARjs. Tracking a image NFT.</dd>
+    </dl>
     
-		marker.addEventListener('markerLost', function() {
-			console.log("video stopped")
-			this.vid.pause();
-			this.vid.currentTime = 0;
-		}.bind(this));
-            }
-        });
-    };
-</script>
+    <hr>
 
-<!-- style for the loader -->
-<style>
-  .arjs-loader {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    <h3>Location Based</h3>
+    <dl>
+      <dt><a href="./aframe-location.html"> AFrame Location Based Test </a></dt>
+      <dd>- Using A frame with ARjs. Location based AR experience.</dd>
+      <br>
+      
+    </dl>
 
-  .arjs-loader div {
-    text-align: center;
-    font-size: 1.25em;
-    color: white;
-  }
-</style>
-
-
-<body style='margin : 0px; overflow: hidden;'>
-
-	<div class="arjs-loader">
-    	<div>Loading, please wait...</div>
-  	</div>
-
-	<a-scene 
-		vr-mode-ui="enabled: false;"
-		renderer="logarithmicDepthBuffer: true;"
-		stats 
-		embedded 
-		arjs='trackingMethod: best;'
-		>
-
-		<a-assets>
-            <video src="video/landscape_cropped.m4v"
-                preload="auto" id="vid" response-type="arraybuffer" loop="true"
-                crossorigin webkit-playsinline autoplay muted playsinline>
-            </video>
-        </a-assets>
-
-		<a-nft
-			videohandler
-			type="nft"
-			url="AR-experience-test/assets/landscape/landscape"
-			smooth="true"
-			smoothCount="10"
-			smoothTolerance=".01"
-			smoothThreshold="5"
-		>
-
-			<a-video
-                src="#vid"
-                position='60 -270 -150'
-                rotation="-90 0 0"
-                width='270'
-                height='270'
-                >
-            </a-video>
-
-		</a-nft>
-
-		<a-entity camera></a-entity>
-	</a-scene>
-</body>
-
+  </body>
 </html>

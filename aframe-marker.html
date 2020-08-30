@@ -23,11 +23,11 @@
                     console.log(this.el)
                 }.bind(this));
     
-    marker.addEventListener('markerLost', function() {
-      console.log("video stopped")
-      this.vid.pause();
-      this.vid.currentTime = 0;
-    }.bind(this));
+                marker.addEventListener('markerLost', function() {
+                  console.log("video stopped")
+                  this.vid.pause();
+                  this.vid.currentTime = 0;
+                }.bind(this));
             }
         });
     };
@@ -51,7 +51,10 @@
         </video>
       </a-assets>
 
-      <a-marker preset="hiro">
+      <a-marker 
+      videohandler
+      preset="hiro"
+      >
         <a-video
                 src="#vid"
                 position='0 0.5 0'

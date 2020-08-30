@@ -5,13 +5,13 @@
 	<!-- include three.js library -->
 	<script src='js/three.js'></script>
 	<!-- include jsartookit -->
-	<script src='js/artoolkit.min.js'></script>
-	<script src="js/artoolkit.api.js"></script>
+	<script src='js/three-v1/artoolkit.min.js'></script>
+	<script src="js/three-v1/artoolkit.api.js"></script>
 	<!-- include threex.artoolkit -->
-	<script src="js/threex-artoolkitsource.js"></script>
-	<script src="js/threex-artoolkitcontext.js"></script>
-	<script src="js/threex-arbasecontrols.js"></script>
-	<script src="js/threex-armarkercontrols.js"></script>
+	<script src="js/three-v1/threex-artoolkitsource.js"></script>
+	<script src="js/three-v1/threex-artoolkitcontext.js"></script>
+	<script src="js/three-v1/threex-arbasecontrols.js"></script>
+	<script src="js/three-v1/threex-armarkercontrols.js"></script>
 </head>
 
 <body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
@@ -20,10 +20,19 @@
   Example created by Lee Stemkoski: https://github.com/stemkoski
   Based on the AR.js library and examples created by Jerome Etienne: https://github.com/jeromeetienne/AR.js/
 -->
-<video id="video" src="video/landscape_cropped.m4v" preload="auto" response-type="arraybuffer" loop="true"
-	crossorigin webkit-playsinline autoplay muted playsinline style="display:none">
-	
-	<source src="video/landscape_cropped.m4v" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+<video 
+	id="video" 
+	preload="auto" 
+	crossOrigin="anonymous" 
+	autoplay 
+	response-type="arraybuffer"
+	loop="true"  
+	playsinline 
+	muted
+	style="display:none"
+	>
+
+	<source src="video/landscape_cropped.m4v" type='video/mp4'>
 </video>
 <script>
 
@@ -41,7 +50,7 @@ animate();
 function initialize()
 {
 	scene = new THREE.Scene();
-	console.log(document.body)
+	
 	let ambientLight = new THREE.AmbientLight( 0xcccccc, 0.5 );
 	scene.add( ambientLight );
 				
@@ -54,7 +63,7 @@ function initialize()
 	});
 	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
 	renderer.setSize(window.innerWidth, window.innerHeight);
-	console.log(renderer.getSize())
+	
 	renderer.domElement.style.position = 'absolute'
 	renderer.domElement.style.top = '0px'
 	renderer.domElement.style.left = '0px'
@@ -114,10 +123,12 @@ function initialize()
 	markerRoot1 = new THREE.Group();
 	scene.add(markerRoot1);
 	let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
-		type: 'pattern', patternUrl: "assets/data/hiro.patt",
+		type: 'pattern', 
+		patternUrl: "assets/data/hiro.patt",
 	})
+	console.log(markerControls1)
 
-	let geometry1 = new THREE.PlaneBufferGeometry(1,1, 40,40);
+	let geometry1 = new THREE.PlaneBufferGeometry(1,1, 4,4);
 	/* --------IMAGE------
 	let loader = new THREE.TextureLoader();
 	let texture = loader.load( 'assets/landscape.jpg', render );
@@ -146,14 +157,19 @@ function update()
 	if ( arToolkitSource.ready !== false )
 		arToolkitContext.update( arToolkitSource.domElement );
 	
-	console.log(markerRoot1.visible, video)
-
+	//console.log(markerRoot1.visible, video)
+	
 	if ( markerRoot1.visible ){
-		video.play()
+		if (video.paused) {
+			video.play()
+		}
 	}else{
-		video.pause()
-		video.currentTime = 0
+		if (!video.paused) {
+			video.pause()
+			//video.currentTime = 0
+		}
 	}
+	
 }
 
 

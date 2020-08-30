@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<!-- three.js library -->
+<script src='js/three.js'></script>
+<!-- three.js load GLTF -->
+<!-- ar.js -->
+<script src='js/ar-nft.js'></script>
+<script>THREEx.ArToolkitContext.baseURL = 'https://127.0.0.1:8080/AR-experience-test/'</script>
+
+
+<body style='position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin : 0px; overflow: hidden;'>
+    <style>
+        .arjs-loader {
+            margin: 0 auto;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .arjs-loader-spinner {
+            z-index: 10;
+            -webkit-transform: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
+            border: 3px solid #ddd;
+            border-top: 3px solid #42a5f5;
+            border-radius: 50%;
+            height: 75px;
+            width: 75px;
+        }
+
+        @-webkit-keyframes spin {
+            to {
+                border-top-color: #42a5f5;
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                border-top-color: #42a5f5;
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <div class="arjs-loader">
+        <div class="arjs-loader-spinner"></div>
+    </div>
+
+    <video 
+    id="video" 
+    preload="auto" 
+    crossOrigin="anonymous" 
+    autoplay 
+    response-type="arraybuffer"
+    loop="true"  
+    playsinline 
+    muted
+    style="display:none"
+    >
+
+    <source src="video/landscape_cropped.m4v" type='video/mp4'>
+    </video>
+
+    <script>
+        //////////////////////////////////////////////////////////////////////////////////
+        //		Init
+        //////////////////////////////////////////////////////////////////////////////////
+
+        var renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true,
+            precision: 'mediump',
+        });
+
+        var clock = new THREE.Clock();
+
+        var mixers = [];
+
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.domElement.style.position = 'absolute'
+        renderer.domElement.style.top = '0px'
+        renderer.domElement.style.left = '0px'
+        document.body.appendChild( renderer.domElement );
+
+        // init scene and camera
+        var scene = new THREE.Scene();
+
+        //////////////////////////////////////////////////////////////////////////////////
+        //		Initialize a basic camera
+        //////////////////////////////////////////////////////////////////////////////////
+
+        // Create a camera
+        var camera = new THREE.Camera();
+        scene.add(camera);
+
+        var light = new THREE.AmbientLight(0xffffff);
+        scene.add(light);
+
+        ////////////////////////////////////////////////////////////////////////////////
+        //          handle arToolkitSource
+        ////////////////////////////////////////////////////////////////////////////////
+
+        var arToolkitSource = new THREEx.ArToolkitSource({
+            sourceType : 'webcam',
+            sourceWidth: 480,
+            sourceHeight: 640,
+        })
+
+        arToolkitSource.init(function onReady(){
+            // use a resize to fullscreen mobile devices
+            setTimeout(function() {
+                onResize()
+            }, 1000);
+        })
+
+        // handle resize
+        window.addEventListener('resize', function(){
+            onResize()
+        })
+
+        // listener for end loading of NFT marker
+        window.addEventListener('arjs-nft-loaded', function(ev){
+          console.log(ev);
+        })
+
+        function onResize(){
+            arToolkitSource.onResizeElement()
+            arToolkitSource.copyElementSizeTo(renderer.domElement)
+            if( arToolkitContext.arController !== null ){
+                arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////
+        //          initialize arToolkitContext
+        ////////////////////////////////////////////////////////////////////////////////
+
+        // create atToolkitContext
+        var arToolkitContext = new THREEx.ArToolkitContext({
+            cameraParametersUrl: 'assets/data/camera_para.dat',
+            detectionMode: 'mono',
+            canvasWidth: 480,
+            canvasHeight: 640,
+        }, {
+            sourceWidth: 480,
+            sourceHeight: 640,
+        })
+        console.log(THREEx.ArToolkitContext.baseURL,'test')
+
+        // initialize it
+        arToolkitContext.init(function onCompleted(){
+            // copy projection matrix to camera
+            camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+        })
+
+        ////////////////////////////////////////////////////////////////////////////////
+        //          Create a ArMarkerControls
+        ////////////////////////////////////////////////////////////////////////////////
+
+        // init controls for camera
+        var markerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
+            type : 'nft',
+            descriptorsUrl : 'AR-experience-test/assets/landscape/landscape',
+            changeMatrixMode: 'cameraTransformMatrix'
+        })
+        markerRoot1 = new THREE.Group();
+        scene.add(markerRoot1);
+        let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRoot1, {
+            type: 'pattern', 
+            patternUrl: "assets/data/hiro.patt",
+        })
+        console.log(markerControls1)
+
+
+        let geometry1 = new THREE.PlaneBufferGeometry(1,1, 4,4);
+        /* --------IMAGE------
+        let loader = new THREE.TextureLoader();
+        let texture = loader.load( 'assets/landscape.jpg', render );
+        let material1 = new THREE.MeshBasicMaterial( { map: texture } );
+        */
+        let video = document.getElementById( 'video' );
+        video.src = "video/landscape_cropped.m4v"
+        video.load()
+        //video.play()
+        let texture = new THREE.VideoTexture( video );
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.format = THREE.RGBFormat;
+        let material1 = new THREE.MeshBasicMaterial( { map: texture } );
+        
+        mesh1 = new THREE.Mesh( geometry1, material1 );
+        mesh1.rotation.x = -Math.PI/2;
+        
+        markerRoot1.add( mesh1 );
+
+
+
+        animate();
+
+
+
+
+        function render()
+        {
+            renderer.render( scene, camera );
+        }
+
+        function update()
+        {
+            // update artoolkit on every frame
+            if ( arToolkitSource.ready !== false )
+                arToolkitContext.update( arToolkitSource.domElement );
+            
+            //console.log(markerRoot1.visible, video)
+            
+            if ( markerRoot1.visible ){
+                if (video.paused) {
+                    video.play()
+                }
+            }else{
+                if (!video.paused) {
+                    video.pause()
+                    //video.currentTime = 0
+                }
+            }
+            
+        }
+
+        function animate()
+        {
+            requestAnimationFrame(animate);
+            update();
+            render();
+        }
+
+    </script>
+</body>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+  
+  <script>
+      window.onload = function() {
+          AFRAME.registerComponent('camera-listener', {
+
+            tick: function () {
+              var cameraEl = this.el.sceneEl.camera.el;
+              cameraEl.getAttribute('position');
+              cameraEl.getAttribute('rotation');
+              
+              // Do something.
+            }
+          });
+
+          function getLocation() {
+            navigator.geolocation.getCurrentPosition((position)=>{
+              console.log(position)
+              document.getElementById("geo").innerHTML = position.coords.latitude + ';' + position.coords.longitude;
+              setTimeout(getLocation, 1000);
+            })
+          }
+          //getLocation()
+          
+      };
+
+
+  </script>
+
+
+  <body style="margin : 0px; overflow: hidden;">
+    <!--
+    <div id="geo" style="position: absolute; left: 20%; top: 30px; background: white;"> <div>
+    -->
+    <a-scene 
+      vr-mode-ui="enabled: false;"
+      renderer="logarithmicDepthBuffer: true;"
+      stats 
+      embedded 
+      arjs='trackingMethod: best;'
+    > 
+      <a-assets>
+        <video src="video/landscape_cropped.m4v"
+            preload="auto" id="vid" response-type="arraybuffer" loop="true"
+            crossorigin webkit-playsinline autoplay muted playsinline>
+        </video>
+      </a-assets>
+
+
+      <a-text
+        value="This content will always face you."
+        look-at="[gps-camera]"
+        scale="120 120 120"
+        gps-entity-place="latitude: 36.69133; longitude: 119.1380787431373;"
+      ></a-text>
+
+      <a-video
+        src="#vid"
+        rotation="0 0 0"
+        width='200'
+        height='200'
+        gps-entity-place="latitude: 36.69133; longitude: 119.1380787431373;"
+        >
+      </a-video>
+
+      <a-camera gps-camera rotation-reader></a-camera>
+    </a-scene>
+  </body>
+</html>
+
+
+<!--
+
+
+  <script src='https://aframe.io/releases/0.9.2/aframe.min.js'></script>
+
+  <script src="js/aframe-extras.loaders.min.js"></script>
+
+  <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+  
+  <a-entity gps-entity-place="latitude: 36.691888; longitude: 119.1380787431373;" gltf-model="assets/magnemite/scene.gltf" rotation="0 180 0" animation-mixer scale="0.002 0.002 0.002"/>
+-->
